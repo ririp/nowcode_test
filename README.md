@@ -94,3 +94,46 @@ public:
     }
 };
 ```
+## 4 二叉搜索树的后续遍历序列
+#### 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
+###### 二叉搜索树/二叉查找树Binary Search Tree  它或者是一棵空树，或者是具有下列性质的二叉树： 若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值； 若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值； 它的左、右子树也分别为二叉排序树。<br>BST的后序遍历合法序列是，对于一个序列S，最后一个元素是x （也就是根），如果去掉最后一个元素的序列为T，那么T满足：T可以分成两段，前一段（左子树）小于x，后一段（右子树）大于x，且这两段（子树）都是合法的后序序列，对两个子树序列递归判断。
+```
+class Solution {
+public:
+    bool judge(vector<int> temp,int lef,int rig){//temp是原序列，lef，rig表示此次判断起始位置和结束位置
+        if(lef>=rig)return true;//l==r对应的是叶子结点，l>r对应的是空树，这两种情况都是合法的二叉搜索树
+        int i=rig;
+        while(i>lef && temp[i-1]>temp[rig])i--;//从根节点开始，找出右子树序列的初始位置
+        for(int j=i-1;j>=lef;j--)if(temp[j]>temp[rig])return false;//如果左子树序列有大于根节点的，则表示不是合法序列
+        return judge(temp,lef,i-1) && judge(temp,i,rig-1);
+    }
+    
+    bool VerifySquenceOfBST(vector<int> sequence) {
+      if(sequence.size()==0)return false;
+      return judge(sequence,0,sequence.size()-1);
+    }
+};
+
+```
+## 5 栈的压入、弹出序列
+#### 输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否可能为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4,5,3,2,1是该压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列。（注意：这两个序列的长度是相等的）
+###### 直接用一个临时栈temp来模拟输入输出。把pushV的序列按顺序压入temp，压入过程中，将temp的栈顶（也就是下一个要pop出去的数）和popV序列作对比，若相等，则把temp的栈顶pop，直到不相等为止。如果昨晚整个操作，temp栈为空则返回true，否则说明压入弹出顺序不匹配。
+```
+class Solution {
+public:
+    bool IsPopOrder(vector<int> pushV,vector<int> popV) {
+        int n=pushV.size();
+        stack<int>temp;
+        int index=0;
+        for(int i=0;i<n;i++){
+            temp.push(pushV[i]);//压入临时栈
+        while(popV[index]==temp.top()&&index<n){//如果出栈等于临时栈的栈顶，将栈顶pop，弹出序列index+1
+            temp.pop();
+            index++;//这边只有栈顶等于当前弹出序列数值才需要后移，所以不能用for
+        }
+        }
+        if(temp.empty())return true;
+        else return false;
+    }
+};
+```
