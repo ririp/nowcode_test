@@ -211,6 +211,116 @@ public:
     }
 };
 ```
+## 合并两个排序的链表
+#### 输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
+###### 两个有序链表合成，就不需要重排了，这里用非递归实现，新建newhead和cur，cur记录当前要插的节点位置，判断两个链表头结点存储值的大小，将更小的连接到cur的后面，然后cur后移一格，执行完while循环若两链表有剩余，将剩余部分街上，最后返回新的头结点，即newhead->next；
+```
+/*
+struct ListNode {
+	int val;
+	struct ListNode *next;
+	ListNode(int x) :
+			val(x), next(NULL) {
+	}
+};*/
+class Solution {
+public:
+    ListNode* Merge(ListNode* pHead1, ListNode* pHead2)
+    {
+        if(!pHead1&&!pHead2)return NULL;
+        if(!pHead1)return pHead2;
+        if(!pHead2)return pHead1;
+        ListNode* cur=new ListNode(5);//随意初始化值,但一定要初始化，不能为NULL，因为listnode是一个指定类，且需要赋值
+        ListNode* newhead=cur;
+        while(pHead1&&pHead2){
+            if(pHead1->val < pHead2->val){
+                cur->next=pHead1;
+                pHead1=pHead1->next;
+            }
+            else{
+                cur->next=pHead2;
+                pHead2=pHead2->next;
+            }
+            cur=cur->next;
+        }
+        if(pHead1)cur->next=pHead1;//如果链表1还没完，直接把链表一剩下的接上去
+        if(pHead2)cur->next=pHead2;
+        return newhead->next;
+    }
+};
+```
+## 反转链表
+#### 输入一个链表，反转链表后，输出新链表的表头。
+###### 用三个指针完成，过程简述如下：
+```
+对于链表2->3->1->4->9,p指向头节点2，q指向下一个节点3，先断开头结点，此时2（p） 3（q）->1->4->9
+做第一次循环
+r=q->next      2（p）    3（q）->1（r）->4->9
+q->next=p      2（p）<-3（q）    1（r）->4->9
+p=q            2  <-3（p,q）     1（r）->4->9
+q=r            2  <-3（p）       1（q）->4->9
+下一次循环后    2  <-3 <-1（p）       4（q）->9
+重复上述过程 p就是新的头结点
+```
+```
+class Solution {
+public:
+    ListNode* ReverseList(ListNode* pHead) {
+     if(pHead==NULL)return NULL;
+     ListNode* p = pHead;
+     ListNode* q = pHead->next;
+     ListNode* r;
+     pHead->next=NULL;
+     while(q){
+         r=q->next;
+         q->next=p;
+         p=q;
+         q=r;
+     }
+     return p;
+    }
+};
+```
+## 树的子结构
+#### 输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
+###### 题目中pRoot1指向A的根，pRoot2指向B的根。需要熟悉递归思想，hassubtree用来判断B是不是A从根节点开始的子结构，如果不是分别从A的左右子树继续找；如果二叉树A的根节点与B的根节点相同，调用judge函数。judge函数也是递归实现。具体见代码注释。
+```
+/*
+struct TreeNode {
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+	TreeNode(int x) :
+			val(x), left(NULL), right(NULL) {
+	}
+};*/
+class Solution {
+public:
+    bool HasSubtree(TreeNode* pRoot1, TreeNode* pRoot2)
+    {
+     bool result=false;//默认结果
+     if(pRoot1!=NULL&&pRoot2!=NULL){
+         if(pRoot1->val==pRoot2->val){//如果二叉树A的根节点与B的根节点相同
+             result=judge(pRoot1,pRoot2);//开始判断B是不是A从根节点开始的子结构
+         }
+         if(!result){//没找到，继续从A的左子树开始找包不包含B
+             result=HasSubtree(pRoot1->left,pRoot2);
+         }
+         if(!result){//没找到，继续从A的右子树开始找包不包含B
+             result=HasSubtree(pRoot1->right,pRoot2);
+         }
+     }
+        return result;
+    }
+    bool judge(TreeNode* pRoot1, TreeNode* pRoot2){
+        if(pRoot2==NULL)return true;//B树遍历完了，都能对上，返回true
+        if(pRoot1==NULL&&pRoot2!=NULL)return false;//A树结束了，B树还有，则不为子结构，
+        if(pRoot1->val==pRoot2->val)//如果相同就继续判断 各自的左右是否相同
+            return judge(pRoot1->left,pRoot2->left)&&judge(pRoot1->right,pRoot2->right);//不想同返回false
+        else return false;//若当前节点不同就返回false
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
