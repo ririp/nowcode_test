@@ -339,8 +339,85 @@ public:
 ```
 ## 二叉搜索树与双向链表
 #### 输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
+###### 用两结点分别指向链表的头尾。具体做法在代码中注释。
 ```
+例：
+     10
+    /   \
+   7     15
+  / \   /  \        
+ 2   9 12   18
+ 先递归到最左端结点2，此时还会执行一次递归（第一个if）返回到结点2，执行第二个if，head和tail都指向结点2
+ 返回头结点head后回到结点7，执行else语句，结点7的左指针指向tail即2，然后tail右指针指向结点7，尾巴移到结点7，此时2<->7，
+ 然后递归语句到结点9重复上述操作。
+```
+```
+class Solution {
 
+public:
+    TreeNode* head=NULL;//已完成双向链表的头结点
+    TreeNode* tail=NULL;//已完成双向链表的尾结点
+    TreeNode* Convert(TreeNode* pRootOfTree)
+    {
+        if(pRootOfTree==NULL)return NULL;//用来判断到达最底端，返回null仅仅表示递归的终点
+        Convert(pRootOfTree->left);//向左遍历
+        if(head==NULL){//当前值为null时的上一层，也就是最左端执行
+            head=pRootOfTree;//最初的双向链表只有当前点，所以头尾都是它
+            tail=pRootOfTree;
+        }
+        else{
+            pRootOfTree->left=tail;//第二个节点开始，左边连接链表的尾
+            tail->right=pRootOfTree;//链表尾右边连接当前节点
+            tail=pRootOfTree;//链表尾变为当前节点
+        }
+        Convert(pRootOfTree->right);//向右遍历
+        return head;//返回头节点
+    }
+};
+```
+## 复杂链表的复制
+#### 输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
+###### 分三步操作，<br>1.先复制每个结点，1->2->3->4 =》1->1->2->2->3->3->4->4 得到新链表2<br>2.然后复制特殊指针；如果结点1的特殊指针指向3，那么第一步操作完后，对于新链表2 结点3后面也是3，该结点就是新链表结点1的特殊指针位置，所以我们可以用A1.random = A.random.next描述特殊指针（A1是A的复制结点）<br>3.拆分链表
+```
+/*
+struct RandomListNode {
+    int label;
+    struct RandomListNode *next, *random;
+    RandomListNode(int x) :
+            label(x), next(NULL), random(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    RandomListNode* Clone(RandomListNode* pHead)
+    {
+        if(pHead==NULL)return NULL;
+        RandomListNode* cur=pHead;
+        while(cur!=NULL){//复制每个结点，如复制结点A得到A1，将结点A1插到结点A后面；对于链表1->2->3->4
+            RandomListNode* clonenode=new RandomListNode(0);//1->2->3->4 ;0clonenode
+            clonenode->label=cur->label;//1->2->3->4 ;1clonenode
+            RandomListNode* nextnode=cur->next;//1 cur->2 next->3->4;1clone
+            cur->next=clonenode;//1 cur->1clone;2next->3->4
+            clonenode->next=nextnode;//1 cur->1clone->2next->3->4
+            cur=nextnode;//1 ->1clone->2cur->3->4
+        }
+        cur=pHead;//循环完重新回头
+        while(cur!=NULL){//重新遍历链表，复制老结点的随机指针给新结点，如A1.random = A.random.next;
+            cur->next->random=cur->random==NULL?NULL:cur->random->next;
+            cur=cur->next->next;
+        }
+        cur=pHead;
+        RandomListNode* clonehead=pHead->next;
+        while(cur!=NULL){//拆分链表，将链表拆分为原链表和复制后的链表
+            RandomListNode* clonenode=cur->next;//1cur 1clonehead/clonenode 2 2 3 3 4 4
+            cur->next=clonenode->next;//1cur->2   分主链
+            clonenode->next= clonenode->next==NULL?NULL:clonenode->next->next;//分克隆链
+            cur=cur->next;//主链后移
+        }
+        return clonehead;
+    }
+};
 ```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
