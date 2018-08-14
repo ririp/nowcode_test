@@ -421,6 +421,59 @@ public:
 ```
 ## 字符串的排列
 #### 输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。<br>输入描述:<br>输入一个字符串,长度不超过9(可能有字符重复),字符只包括大小写字母。
+###### fun函数执行流程如下图（图片源自牛客网~），pos记录字符串执行下标。对于重复值，利用set中值不重复的特性筛选，然后放回容器。
+![image](https://github.com/ririp/nowcode_test/blob/master/image/8.14github.png)
+```
+class Solution {
+public://回溯法
+    set<string> res;//set里面的值不重复
+    void fun(string str, int pos)
+    {
+        if (pos == str.size())//此时str已经是一次完整的全排列，如bca
+        {
+            res.insert(str);
+            return;
+        }
+        for (int i = pos; i < str.size(); i++)
+        {
+            swap(str[i], str[pos]);
+            fun(str, pos + 1);
+        }
+    }
+    vector<string> Permutation(string str) {
+        res.clear();
+        vector<string> st;//用vector重新放set得到的结果
+        if (str.size() == 0)return st;
+        fun(str, 0);//从位置0开始
+        set<string>::iterator it;
+        for (it = res.begin(); it != res.end(); it++)
+            st.push_back(*it);
+        return st;
+    }
+};
+```
+## 求1+2+3+...+n
+#### 求1+2+3+...+n，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+###### 用&&短路特性，当&&左边为false时，将不再计算右边的表达式。
+```
+总结:
+&&与&的区别为,&无论左边的结果是否为真,都将继续运算右边的逻辑表达式;
+&&左边的值为false时,将不会继续运算其右边的逻辑表达式,结果为false;
+||与|的区别为,|无论其左边的结果是否为true,都将继续运算右边的逻辑表达式;
+||当计算完左边的逻辑表达式且其结果为true时,将不会继续计算右边的逻辑表达式,结果为true;
+短路与&&和短路||都提高了逻辑表达式的计算效率.
+```
+
+```
+class Solution {
+public:
+    int Sum_Solution(int n) {
+        int count=n;
+        count&&(count +=Sum_Solution(n-1));
+        return count;
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
