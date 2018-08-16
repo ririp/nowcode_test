@@ -645,6 +645,38 @@ public:
     }
 };
 ```
+## 表示数值的字符串
+#### 请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。例如，字符串"+100","5e2","-123","3.1416"和"-1E-16"都表示数值。 但是"12e","1a3.14","1.2.3","+-5"和"12e+4.3"都不是。
+###### 考察严谨性的问题，注释如下。
+```
+class Solution {
+public:
+    bool isNumeric(char* str)
+    {
+        bool sign =false,decimal =false,has_e=false;//分别标记符号，小数点，e的出现与否
+        for(int i=0;i<strlen(str);i++){//遍历一遍，剔除不符合情况的
+            if(str[i]=='e'||str[i]=='E'){
+                if(i==0||i==strlen(str)-1)return false;//e不能出现头和末尾，即e前后必须要有数
+                if(has_e)return false;//e只能出现一次
+                has_e=true;
+            }
+            else if(str[i]=='+'||str[i]=='-'){
+                if(i>0&&str[i-1]!='e'&&str[i-1]!='E')return false;//+-不在第一位，则前一位必须是e
+                //if(sign && str[i-1]!='e' && str[i-1]!='E')return false;//
+                sign=true;
+            }
+            else if(str[i]=='.'){
+                if(has_e||decimal)return false;//e后面不能有小数点，小数点不能出现两次
+                decimal=true;
+            }
+            else if(str[i]<'0'||str[i]>'9'){
+                return false;//非法字符
+            }
+        }
+        return true;
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
