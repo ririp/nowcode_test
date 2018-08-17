@@ -677,6 +677,33 @@ public:
     }
 };
 ```
+## 字符流中第一个不重复的字符
+#### 请实现一个函数用来找出字符流中第一个只出现一次的字符。例如，当从字符流中只读出前两个字符"go"时，第一个只出现一次的字符是"g"。当从该字符流中读出前六个字符“google"时，第一个只出现一次的字符是"l"。如果当前字符流没有存在出现一次的字符，返回#字符。
+###### 用map记录每个字符出现的次数，然后找出第一个只出现一次的字符。
+```
+class Solution
+{
+public:
+    map<char,int> m;
+    string s;
+  //Insert one char from stringstream
+    void Insert(char ch)
+    {
+         s+=ch;
+         m[ch]++;
+    }
+  //return the first appearence once char in current stringstream
+    char FirstAppearingOnce()
+    {
+    for(int i=0;i<s.size();i++){
+        if(m[s[i]]==1){
+            return s[i];
+        }
+    }
+     return '#';
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
