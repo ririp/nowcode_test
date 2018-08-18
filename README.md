@@ -704,6 +704,58 @@ public:
     }
 };
 ```
+## 替换空格
+#### 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+###### 统计空格后，从后往前插入替换所需操作更少。
+```
+class Solution {
+public://空格为1 替换的占3
+	void replaceSpace(char *str,int length) {
+     if(str==NULL||length<0)return;
+     int blank=0;
+     for(int i=0;str[i]!='\0';i++){//统计空格数目
+            if(str[i]==' ')blank++;
+        }
+     for(int i=length-1;i>=0;i--){//从后往前更有效率
+         if(str[i]!=' '){
+             str[i+2*blank]=str[i];
+         }
+         else{
+             blank--;
+             str[i+2*blank]='%';
+             str[i+2*blank+1]='2';
+             str[i+2*blank+2]='0';
+         }
+     }
+	}
+};
+```
+## 扑克牌顺子
+#### LL今天心情特别好,因为他去买了一副扑克牌,发现里面居然有2个大王,2个小王(一副牌原本是54张^_^)...他随机从中抽出了5张牌,想测测自己的手气,看看能不能抽到顺子,如果抽到的话,他决定去买体育彩票,嘿嘿！！“红心A,黑桃3,小王,大王,方片5”,“Oh My God!”不是顺子.....LL不高兴了,他想了想,决定大\小 王可以看成任何数字,并且A看作1,J为11,Q为12,K为13。上面的5张牌就可以变成“1,2,3,4,5”(大小王分别看作2和4),“So Lucky!”。LL决定去买体育彩票啦。 现在,要求你使用这幅牌模拟上面的过程,然后告诉我们LL的运气如何， 如果牌能组成顺子就输出true，否则就输出false。为了方便起见,你可以认为大小王是0。
+###### 记录五张牌中的最大值最小值，如果牌没有重复且最大最小值差值小于等于4，则能组成顺子，解释如下。
+###### 如果五张牌中没有大小王，且最大最小差值等于4，说明五张牌是从最小值到最大值的连续整数，能组成顺子，如678910。<br>如果五张牌中有若干张大小王，若要组成顺子。则大小王有三种替换方式，<br>替换为最大最小值中间的数，则差值依然等于四，如12005；<br>替换为大于最大值的数，则差值小于4，如12040；<br>替换为小于最小值的数，则差值小于4，如03406.
+```
+class Solution {
+public:
+    bool IsContinuous( vector<int> numbers ) {
+        int max=-1,min=14;
+        int size=numbers.size();
+        set<int> s;
+        if(size!=5)return false;
+        for(int i=0;i<size;i++){
+            if(numbers[i]==0){
+                continue;
+            }
+            if(numbers[i]!=0&&numbers[i]>max)max=numbers[i];
+            if(numbers[i]!=0&&numbers[i]<min)min=numbers[i];
+            if(!s.insert(numbers[i]).second)return false;//记录是否有重复值
+            s.insert(numbers[i]);
+        }
+        if (max-min<=4){return true;}
+        return false;
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
