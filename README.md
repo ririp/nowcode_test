@@ -756,6 +756,76 @@ public:
     }
 };
 ```
+## 孩子们的游戏(圆圈中最后剩下的数)
+#### 每年六一儿童节,牛客都会准备一些小礼物去看望孤儿院的小朋友,今年亦是如此。HF作为牛客的资深元老,自然也准备了一些小游戏。其中,有个游戏是这样的:首先,让小朋友们围成一个大圈。然后,他随机指定一个数m,让编号为0的小朋友开始报数。每次喊到m-1的那个小朋友要出列唱首歌,然后可以在礼品箱中任意的挑选礼物,并且不再回到圈中,从他的下一个小朋友开始,继续0...m-1报数....这样下去....直到剩下最后一个小朋友,可以不用表演,并且拿到牛客名贵的“名侦探柯南”典藏版(名额有限哦!!^_^)。请你试着想下,哪个小朋友会得到这份礼品呢？(注：小朋友的编号是从0到n-1)
+###### 约瑟夫环问题
+```
+class Solution {
+public:
+    int LastRemaining_Solution(int n, int m)
+    {
+        if(n<1||m<1)return -1;
+        if(n==1)return 0;
+        return (LastRemaining_Solution(n-1,m)+m)%n;
+    }
+};
+```
+
+## 数组中重复的数字
+#### 在一个长度为n的数组里的所有数字都在0到n-1的范围内。 数组中某些数字是重复的，但不知道有几个数字是重复的。也不知道每个数字重复几次。请找出数组中任意一个重复的数字。 例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应的输出是第一个重复的数字2。
+###### 用一个help数组记录每个数出现的次数（注意要），例 help[5]=2表示 数字5出现了两次。
+```
+class Solution {
+public:
+    // Parameters:
+    //        numbers:     an array of integers
+    //        length:      the length of array numbers
+    //        duplication: (Output) the duplicated number in the array number
+    // Return value:       true if the input is valid, and there are some duplications in the array number
+    //                     otherwise false
+    bool duplicate(int numbers[], int length, int* duplication) {
+        int *help=new int [length];
+        for(int i=0;i<length;i++){//初始化
+            help[i]=0;
+        }
+        for(int i=0;i<length;i++){
+            if(help[numbers[i]]==0)help[numbers[i]]++;
+            else {
+                *duplication=numbers[i];
+                return true;
+            }
+        }
+        delete []help;
+        return false;
+    }
+};
+```
+## 构建乘积数组
+#### 给定一个数组A[0,1,...,n-1],请构建一个数组B[0,1,...,n-1],其中B中的元素B[i]=A[0]*A[1]*...*A[i-1]*A[i+1]*...*A[n-1]。不能使用除法。
+###### 不用除法就只能分开乘了，value用来记录累乘的值，第一个for算前半部分，第二个for算后半部分。因为先执行B[i]=value,所以B[i]没有将A[i]乘进去。
+```
+//B[i]=A[0]*A[1]*...*A[i-1]*A[i+1]*...*A[n-1]
+//从左到右算 B[i]=A[0]*A[1]*...*A[i-1]
+//从右到左算B[i]*=A[i+1]*...*A[n-1]
+class Solution {
+public:
+    vector<int> multiply(const vector<int>& A) {
+    int n=A.size();
+    vector<int>B(n);//大小为n的向量
+    int value = 1;//用来存A累乘的值
+    for(int i=0;i<n;i++){
+        B[i]=value;
+        value*=A[i];
+    }
+    value=1;
+    for(int i=n-1;i>=0;i--){
+        B[i]*=value;
+        value*=A[i];
+    }
+    return B;
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
