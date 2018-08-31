@@ -862,7 +862,32 @@ public:
     }
 };
 ```
-
+## 最小的k个数
+#### 输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4。
+###### 面试经典题，维护一个元素个数为k的大根堆，然后遍历n个数，依次与大根堆的堆顶比较，如果比堆顶小的，堆顶弹出，插入新元素。
+```
+class Solution {
+public:
+    vector<int> GetLeastNumbers_Solution(vector<int> input, int k) {
+        int size=input.size();
+        if(size<k||k<=0||size<=0)return vector<int>();//条件考虑不全会超时
+        vector<int>result;
+        for(int i=0;i<k;i++)result.push_back(input[i]);//把前k个数放进vector
+        make_heap(result.begin(),result.end());//对result中的元素建堆
+        
+        for(int i=k;i<size;i++){
+            if(input[i]<result[0]){//依次与堆顶元素比，比堆顶小的，弹出堆顶，插入该元素
+                pop_heap(result.begin(),result.end());//将堆顶放置末尾
+                result.pop_back();//将末尾元素删除
+                result.push_back(input[i]);//插入新元素
+                push_heap(result.begin(),result.end());//对新元素建堆
+            }
+        }
+        sort_heap(result.begin(),result.end());//堆排序
+        return result;
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
