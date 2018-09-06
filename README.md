@@ -888,6 +888,33 @@ public:
     }
 };
 ```
+## 数组中出现次数超过一半的数字
+#### 数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
+###### 若有数字超过数组长度的一半，则该数组出现次数大于其他数总个数，将数组中不同的两个数依次消去，若存在剩余，则剩下的record就是那个数，最后将record再与数组遍历比较
+```
+class Solution {
+public:
+    int MoreThanHalfNum_Solution(vector<int> numbers) {
+    if(numbers.empty())return 0;
+    int n=numbers.size();
+    int record=numbers[0],count=1;
+    for(int i=1;i<n;i++){
+        if(numbers[i]!=record)count--;//如果与前一个数字不同，则count--
+        else if(numbers[i]==record)count++;//与前一个数字相同，count++；count记录record出现的次数
+        if(count==0){//count为0，表示之前遍历的恰好能不同不同成组，重新开始记录
+            record=numbers[i];
+            count=1;
+        }
+    }
+    int count2=0;
+    for(int i=0;i<n;i++){
+        if(numbers[i]==record)count2++;
+    }
+    if(count2>n/2)return record;
+    else return 0;
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
