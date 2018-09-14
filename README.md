@@ -915,6 +915,51 @@ public:
     }
 };
 ```
+## 整数中1出现的次数（从1到n整数中1出现的次数）
+#### 求出1~13的整数中1出现的次数,并算出100~1300的整数中1出现的次数？为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数（从1 到 n 中1出现的次数）。
+###### 硬解……
+```
+class Solution {
+public://暴力解法。。。
+    int NumberOf1Between1AndN_Solution(int n)
+    {
+        int count=0;
+        for(int i=0;i<=n;i++){
+            int temp=i;
+            while(temp){
+                if(temp%10==1){
+                    count++;
+                }
+                temp/=10;
+            }
+        }
+        return count;
+    }
+};
+```
+## 把数组排成最小的数
+#### 输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+```
+class Solution {
+public:
+    static bool compare(int a,int b){
+        string A=to_string(a)+to_string(b);
+        string B=to_string(b)+to_string(a);
+        return A<B;//定义 新的小于判定方法,如3和32,332>323，则定义32更小；
+        //32和321,32 321>321 32，则321更小
+    }
+    string PrintMinNumber(vector<int> numbers) {
+        int size=numbers.size();
+        if(size==0)return "";
+        string result;
+        sort(numbers.begin(),numbers.end(),compare);
+        for(int i=0;i<size;i++){
+            result+=to_string(numbers[i]);
+        }
+        return result;
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
