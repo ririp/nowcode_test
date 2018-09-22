@@ -960,6 +960,81 @@ public:
     }
 };
 ```
+## 丑数
+#### 把只包含质因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含质因子7。 习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。
+```
+class Solution {
+public:
+    int GetUglyNumber_Solution(int index) {
+        if(index<7)return index;
+        vector<int>res;
+        int p2=0,p3=0,p5=0,num=1;//p2 3 5分别记录 乘以2 3 5以后的结果索引，初始索引都是0
+        res.push_back(num);
+        while(res.size()<index){
+            num=min(min(res[p2]*2,res[p3]*3),res[p5]*5);//取最小值 
+            res.push_back(num);
+            if(num==res[p2]*2)p2++;
+            if(num==res[p3]*3)p3++;
+            if(num==res[p5]*5)p5++;
+        }
+        /*1.num=min 2 3 5=2 ; p2=1 p3=0 p5=0
+          2.num=min 4 3 5=3 ; p2=1 p3=1 p5=0;
+          3 num=min 4 6 5=5 ; p2=1 p3=1 p5=1
+          ......参考 事无巨细，悉究本末*/
+        return num;
+    }
+};
+```
+## 两个链表的第一个公共结点
+#### 输入两个链表，找出它们的第一个公共结点。
+```
+方法1：计算两个链表的长度，让长的链表先走差值步，然后两个一起开始走，如果遍历到重复，那个重复点就是最初的公共节点
+方法2：假定 List1长度: a+n  List2 长度:b+n, 且 a<b
+       那么 p1 会先到链表尾部, 这时p2 走到 a+n位置,将p1换成List2头部
+       接着p2 再走b+n-(n+a) =b-a 步到链表尾部,这时p1也走到List2的b-a位置，
+       还差a步就到可能的第一个公共节点。
+       将p2 换成 List1头部，p2走a步也到可能的第一个公共节点。
+       如果恰好p1==p2,那么p1就是第一个公共节点。  或者p1和p2一起走n步到达列表尾部，
+       二者没有公共节点，退出循环。 同理a>=b.
+       时间复杂度O(n+a+b)*/
+```
+```
+方法一：
+class Solution {//有公共节点的话，则公共节点到链表尾都重复。
+public:
+    ListNode* FindFirstCommonNode( ListNode* pHead1, ListNode* pHead2) {
+        int listlength1=getlistlength(pHead1);
+        int listlength2=getlistlength(pHead2);
+        int dif=0;
+        if (listlength1>listlength2){
+            dif=listlength1-listlength2;
+            for(int i=0;i<dif;i++){
+                pHead1=pHead1->next;
+            }
+        }
+        else if(listlength1<=listlength2){
+            dif=listlength2-listlength1;
+            for(int i=0;i<dif;i++){
+                pHead2=pHead2->next;
+            }
+        }
+        while(pHead1!=pHead2&&pHead1!=NULL&&pHead2!=NULL){
+            pHead1=pHead1->next;
+            pHead2=pHead2->next;
+        }
+        return pHead1;
+    }
+    int getlistlength(ListNode *node){
+        int count=0;
+        while(node!=NULL){
+            count++;
+            node=node->next;
+        }
+        return count;
+    }
+};
+```
+
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
