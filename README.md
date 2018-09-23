@@ -1034,6 +1034,23 @@ public:
     }
 };
 ```
+## 第一个只出现一次的字符
+#### 在一个字符串(0<=字符串长度<=10000，全部由字母组成)中找到第一个只出现一次的字符,并返回它的位置, 如果没有则返回 -1（需要区分大小写）.
+```
+class Solution {
+public:
+    int FirstNotRepeatingChar(string str) {
+        int hash[150]={0};//hash[256]更保险
+        for(int i=0;i<str.size();i++){
+            hash[(int)str[i]]++;
+        }
+        for(int i=0;i<str.size();i++){
+            if(hash[(int)str[i]]==1)return i;
+        }
+        return -1;
+    }
+};
+```
 
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
