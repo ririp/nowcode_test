@@ -1051,6 +1051,67 @@ public:
     }
 };
 ```
+## 数组中的逆序对
+#### 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组,求出这个数组中的逆序对的总数P。并将P对1000000007取模的结果输出。 即输出P%1000000007
+###### 相当于类归并排序。详解见https://www.nowcoder.com/questionTerminal/96bd6684e04a44eb80e6a68efc0ec6c5，赞同最多的解答
+```
+例：
+输入：1,2,3,4,5,6,7,0
+输出: 7
+```
+```
+class Solution {
+public:
+    int InversePairs(vector<int> data) {
+        if(data.size()==0)return 0;
+        vector<int>copy(data);
+        return merge(data,copy,0,data.size()-1);
+    }//归并排序
+    int merge(vector<int>&data,vector<int>&copy,int l,int r){
+        if(l==r)return 0;
+        int mid=(r+l)>>1;
+        int left=merge(copy,data,l,mid);
+        int right=merge(copy,data,mid+1,r);
+        int i=mid;
+        int j=r;
+        int end=r;
+        long count=0;
+        while(i>=l&&j>=mid+1){
+            if(data[i]>data[j]){
+                count=count+j-mid;
+                copy[end--]=data[i--];
+            }
+            else{
+                copy[end--]=data[j--];
+            }
+        }
+        while(i>=l)
+            copy[end--]=data[i--];
+        while(j>=mid+1)
+            copy[end--]=data[j--];
+        return(left+right+count)%1000000007;
+    }
+};
+```
+## 旋转数组的最小数字
+#### 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。 输入一个非减排序的数组的一个旋转，输出旋转数组的最小元素。 例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。 NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+#### 有序首先想到二分查找~
+```
+class Solution {
+public:
+    int minNumberInRotateArray(vector<int> rotateArray) {//二分查找，但当数组中有相同元素时不能用
+        int n=rotateArray.size();//有相同元素，只能正常排序返回最小值。。。
+        if(n==0)return 0;
+        int left=0,right=n-1;
+        while(left+1!=right){
+            int mid=left+(right-left)/2;
+            if(rotateArray[mid]<rotateArray[left])right=mid;
+            else{left=mid;}
+        }
+        return rotateArray[right];
+    }
+};
+```
 
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
