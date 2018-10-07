@@ -1131,6 +1131,31 @@ public:
     }
 };
 ```
+## 用两个栈实现队列
+#### 用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
+```
+class Solution//队列是队头删除，队尾插入，栈是只允许在栈顶删除或者插入
+{
+public:
+    void push(int node) {//stack1正常push node
+        stack1.push(node);
+    }
+    int pop() {
+        if(stack2.empty()){//empty函数，如果空返回true。
+            while(!stack1.empty()){
+                stack2.push(stack1.top());//stack2存入stack1 pop的值
+                stack1.pop();//存入的值，删掉
+            }
+        }
+        int a=stack2.top();//此时stack 顶端出来的值就是队列下要删除的值
+        stack2.pop();//删除掉 队列中已删除的值
+        return a;
+    }
+private:
+    stack<int> stack1;
+    stack<int> stack2;
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
