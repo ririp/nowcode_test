@@ -1156,6 +1156,65 @@ private:
     stack<int> stack2;
 };
 ```
+## 二叉树的下一个节点
+#### 给定一个二叉树和其中的一个结点，请找出中序遍历顺序的下一个结点并且返回。注意，树中的结点不仅包含左右子结点，同时包含指向父结点的指针。
+```
+/*
+struct TreeLinkNode {
+    int val;
+    struct TreeLinkNode *left;
+    struct TreeLinkNode *right;
+    struct TreeLinkNode *next;
+    TreeLinkNode(int x) :val(x), left(NULL), right(NULL), next(NULL) {
+        
+    }
+};
+*/
+class Solution {//中序遍历 左根右
+public:
+    TreeLinkNode* GetNext(TreeLinkNode* pNode)
+    {
+        if(pNode==NULL)return NULL;
+        /*如果有右子树，则下一个节点为右子树的最左节点
+          因为遍历按左根右来，遍历到当前节点说明，左子树已经遍历过了，开始遍历右子树，
+          而右子树是从最左边开始的*/
+        if(pNode->right!=NULL){
+            pNode=pNode->right;
+            while(pNode->left!=NULL)pNode=pNode->left;
+            return pNode;
+        }
+        /*如果没有右子树，因为左边的遍历过了，下一个节点往上走，
+          如果当前节点是父节点的左子树，则下一个节点就是父亲节点，
+          如果当前节点是父节点的右子树，说明根和左都遍历过了，继续往上走，
+          直到节点为父节点的子节点，则父节点就是下一个节点*/
+        while(pNode->next!=NULL){
+            if(pNode==pNode->next->left)return pNode->next;
+            pNode=pNode->next;
+        }
+        return NULL;//上一个while遍历到根节点了 都不满足条件，说明当前节点是最后一个节点，则返回NULL
+    }
+};
+```
+## 对称的二叉树
+#### 请实现一个函数，用来判断一颗二叉树是不是对称的。注意，如果一个二叉树同此二叉树的镜像是同样的，定义其为对称的。
+```
+class Solution {
+public:
+    bool isSymmetrical(TreeNode* pRoot)
+    {
+        if(pRoot==NULL)return true;
+        return define(pRoot->left,pRoot->right);
+    
+    }
+    bool define(TreeNode* left ,TreeNode* right){
+        if(left==NULL&&right==NULL)return true;//递归到最底时，左右都是空，所以要先执行这句到上一层去，不能先写第24行的语句
+        if(left==NULL)return right==NULL;
+        if(right==NULL)return left==NULL;
+        if(left->val!=right->val)return false;//这边不能写left->val==right->val，不然子节点都不能判断了
+        return define(left->right,right->left)&&define(left->left,right->right);
+    }
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
