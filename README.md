@@ -1215,6 +1215,110 @@ public:
     }
 };
 ```
+## 把二叉树打印成多行 
+#### 从上到下按层打印二叉树，同一层结点从左至右输出。每一层输出一行。
+###### 主要思路就是先把根节点存入队列，然后输出，输出的同时把根节点的左右孩子存入队列，再把左孩子输出，同样输出的同时把左孩子的孩子在存入，直到遍历完成，
+```
+例：
+     10
+    /   \
+   7     15
+  / \   /  \        
+ 2   9 12   18    
+ 首先把10存入队列（队列：10），然后输出10（队列：空），输出10的同时把7和15存入（队列7 ，15），
+ 然后再输出7（15）,输出7的同时存入2 和 9（15， 2 ， 9），继续输出15，然后存入12 18，直到全部输出.
+
+```
+
+```
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+
+class Solution {
+public:
+        vector<vector<int> > Print(TreeNode* pRoot) {
+        vector<vector<int>> result;//result 是一个存储向量的向量空间，每个向量表示一层的节点
+        if (pRoot==NULL)return result;
+        queue<TreeNode*> q;//用来存节点的队列
+        q.push(pRoot);
+        while(!q.empty()){//队列每次输出会补充下一行数据到队列，若为空则表示全部输出完了
+            vector<int> node;//用来暂存单层的数据
+            int num =0,layernum=q.size();//num表示当前层的第n个节点，layernum表示上一次记录下的目前层的节点数
+            while(num<layernum){
+            TreeNode*p=q.front();//用指针暂存队头
+            node.push_back(p->val);//此时对头表示层次输出的数据
+            q.pop();//输出完把该数据删除
+            if(p->left)q.push(p->left);//push进当前的左子树
+            if(p->right)q.push(p->right);
+            num++;//一次循环是一个节点的操作
+            }
+        result.push_back(node);//push_back是vector的push操作，表示将向量从底部插入
+        }
+        return result;
+        }
+};
+```
+## 按之字型打印二叉树
+#### 请实现一个函数按照之字形打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右至左的顺序打印，第三行按照从左到右的顺序打印，其他行以此类推。
+#### 用两个栈实现。
+```
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {//层次遍历拿出一个时，把它的左右子树都给放进去，以此类推
+public:
+    vector<vector<int> > Print(TreeNode* pRoot) {
+        vector<vector<int>>res;
+        stack<TreeNode*>stack1,stack2;
+        if(pRoot==NULL)return res;
+        stack1.push(pRoot);
+        TreeNode* node;
+        while(!stack1.empty()||!stack2.empty()){
+            vector<int>temp;
+            if(!stack1.empty()){
+            while(!stack1.empty()){
+                node=stack1.top();
+                stack1.pop();
+                temp.push_back(node->val);
+                if(node->left!=NULL)//因为是stack类型，所以要从左往右存，取出来才是从右往左
+                    stack2.push(node->left);
+                if(node->right!=NULL)
+                    stack2.push(node->right);
+            }
+                res.push_back(temp);
+            }
+            else if(!stack2.empty()){
+            while(!stack2.empty()){
+                node=stack2.top();
+                stack2.pop();
+                temp.push_back(node->val);
+                if(node->right!=NULL)
+                    stack1.push(node->right);
+                if(node->left!=NULL)
+                    stack1.push(node->left);
+                }
+                res.push_back(temp);
+            }
+        }
+        return res;
+    }
+    
+};
+```
 ## 9 跳台阶
 #### 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
 ###### 经典问题。以下摘自网络。
